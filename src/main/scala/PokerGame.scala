@@ -8,17 +8,17 @@ object PokerGame {
     }
   }
 
-  def defineWinner(firstHand: Hand, secondHand: Hand): Winner = {
+  def defineWinner(firstHand: Hand, secondHand: Hand): Option[Winner] = {
     (defineTypeOfGame(firstHand), defineTypeOfGame(secondHand)) match {
-      case (Pair, HighCard) => Player1
-      case (HighCard, Pair) => Player2
+      case (Pair, HighCard) => Some(Player1)
+      case (HighCard, Pair) => Some(Player2)
       case (Pair, Pair) => computeHigherHand(scoreCard(firstHand.first), scoreCard(secondHand.first))
       case (HighCard, HighCard) => defineWinnerFromHighCard(firstHand, secondHand)
-      case _ => NoWinner
+      case _ => None
     }
   }
 
-  private def defineWinnerFromHighCard(firstHand: Hand, secondHand: Hand): Winner = {
+  private def defineWinnerFromHighCard(firstHand: Hand, secondHand: Hand): Option[Winner] = {
     val firstHandHigherCard = computeHigherCardFromSameHand(scoreCard(firstHand.first), scoreCard(firstHand.second))
     val secondHandHigherCard = computeHigherCardFromSameHand(scoreCard(secondHand.first), scoreCard(secondHand.second))
 
@@ -35,11 +35,11 @@ object PokerGame {
 
   private def computeHigherHand(firstHandScore: Int, secondHandScore: Int) = {
     if (firstHandScore > secondHandScore) {
-      Player1
+      Some(Player1)
     } else if (secondHandScore > firstHandScore) {
-      Player2
+      Some(Player2)
     } else {
-      NoWinner
+      None
     }
   }
 
@@ -71,4 +71,3 @@ case class Hand(first: String, second: String)
 trait Winner
 case object Player1 extends Winner
 case object Player2 extends Winner
-case object NoWinner extends Winner
